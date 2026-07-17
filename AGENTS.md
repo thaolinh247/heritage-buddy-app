@@ -610,5 +610,22 @@ The backend should:
 
 See `lib/llm.ts` for the client-side helper that calls the backend.
 
+## Default Design
+
+### Font
+Use **OpenDyslexic** from `assets/fonts/`:
+- `OpenDyslexic-Regular.otf` — body, subtitle
+- `OpenDyslexic-Bold.otf` — heading, button, logo
+- `OpenDyslexic-Italic.otf`, `OpenDyslexic-BoldItalic.otf` — fallback
+
+Register via `useFonts` from `expo-font` in `src/app/_layout.tsx`.
+
+### Color Palette
+1. `#E8935E`
+2. `#FDF3E7`
+3. `#5C3A21`
+4. `#2E8B7E`
+5. `#E85D4E`
+
 ## Communication Style
 Be concise. Explain what changed and how to test.
