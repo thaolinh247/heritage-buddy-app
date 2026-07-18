@@ -47,7 +47,7 @@ export default function SelectionScreen() {
           className="text-center text-[#3E2723]"
           style={{
             fontSize: 22,
-            lineHeight: 28,
+            lineHeight: 50,
             fontFamily: "OpenDyslexic-Bold",
             flexGrow: 0,
             flexShrink: 0,
