@@ -1,8 +1,10 @@
 import { View, Text, Pressable } from "@/tw";
 import { Image } from "expo-image";
 import { images } from "@/constants/images";
+import { useRouter } from "expo-router";
 
 export default function Index() {
+  const router = useRouter();
   return (
     <View className="flex-1">
       <Image
@@ -59,7 +61,7 @@ export default function Index() {
         className="absolute bottom-0 left-0 right-0 bg-black/60 px-6 pt-5 pb-12"
         style={{ borderTopLeftRadius: 24, borderTopRightRadius: 24 }}
       >
-        <Pressable className="w-full py-4 rounded-2xl bg-[#E8935E] active:opacity-80">
+        <Pressable onPress={() => router.push("/selection")} className="w-full py-4 rounded-2xl bg-[#E8935E] active:opacity-80">
           <Text
             className="text-lg text-white font-['OpenDyslexic-Bold'] text-center"
             style={{

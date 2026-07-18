@@ -1,16 +1,16 @@
-import { useCssElement } from "react-native-css";
+import { Image as RNImage } from "expo-image";
 import React from "react";
 import { StyleSheet } from "react-native";
+import { useCssElement } from "react-native-css";
 import Animated from "react-native-reanimated";
-import { Image as RNImage } from "expo-image";
 
 const AnimatedExpoImage = Animated.createAnimatedComponent(RNImage);
 
 export type ImageProps = React.ComponentProps<typeof Image>;
 
 function CSSImage(props: React.ComponentProps<typeof AnimatedExpoImage>) {
-  const { objectFit, objectPosition, ...style } =
-    StyleSheet.flatten(props.style) || {};
+  const flattenedStyle = StyleSheet.flatten(props.style) as any || {};
+  const { objectFit, objectPosition, ...style } = flattenedStyle;
 
   return (
     <AnimatedExpoImage
