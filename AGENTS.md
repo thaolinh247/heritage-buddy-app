@@ -613,10 +613,10 @@ See `lib/llm.ts` for the client-side helper that calls the backend.
 ## Default Design
 
 ### Font
-Use **OpenDyslexic** from `assets/fonts/`:
-- `OpenDyslexic-Regular.otf` — body, subtitle
-- `OpenDyslexic-Bold.otf` — heading, button, logo
-- `OpenDyslexic-Italic.otf`, `OpenDyslexic-BoldItalic.otf` — fallback
+Use **Helvetica** from `assets/fonts/`:
+- `Helvetica-Regular.ttf` — body, subtitle
+- `Helvetica-Bold.ttf` — heading, button, logo
+- `Helvetica-Italic.ttf`, `Helvetica-BoldItalic.ttf` — fallback
 
 Register via `useFonts` from `expo-font` in `src/app/_layout.tsx`.
 

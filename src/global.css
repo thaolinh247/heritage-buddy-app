@@ -43,10 +43,10 @@
     --color-info-light: #4AA398;
 
     /* ── Font Families ── */
-    --font-dyslexie: "OpenDyslexic-Regular";
-    --font-dyslexie-bold: "OpenDyslexic-Bold";
-    --font-dyslexie-italic: "OpenDyslexic-Italic";
-    --font-dyslexie-bold-italic: "OpenDyslexic-BoldItalic";
+    --font-helvetica: "Helvetica-Bold";
+    --font-helvetica-bold: "Helvetica-Bold";
+    --font-helvetica-italic: "Helvetica-Italic";
+    --font-helvetica-bold-italic: "Helvetica-BoldItalic";
 
     /* ── Shadows ── */
     --shadow-xs: 0 1px 2px rgba(92, 58, 33, 0.05);
@@ -92,7 +92,7 @@
     --font-mono: monospace;
     --font-rounded: normal;
     --font-serif: serif;
-    --font-sans: "OpenDyslexic-Regular", normal;
+    --font-sans: "Helvetica-Bold", normal;
   }
 }
 
@@ -100,7 +100,7 @@
   :root {
     --font-mono: ui-monospace;
     --font-serif: ui-serif;
-    --font-sans: "OpenDyslexic-Regular", system-ui;
+    --font-sans: "Helvetica-Bold", system-ui;
     --font-rounded: ui-rounded;
   }
 }
@@ -112,7 +112,7 @@
   }
 
   body {
-    font-family: "OpenDyslexic-Regular", system-ui, sans-serif;
+    font-family: "Helvetica-Bold", system-ui, sans-serif;
     background-color: #FDF3E7;
     color: #5C3A21;
   }

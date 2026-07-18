@@ -21,7 +21,7 @@ export default function Index() {
             contentFit="contain"
           />
           <Text
-            className="text-lg text-white font-['OpenDyslexic-Bold'] tracking-[2px]"
+            className="text-lg text-white font-['Helvetica-Bold'] tracking-[2px]"
             style={{
               textShadowColor: "rgba(0,0,0,0.85)",
               textShadowOffset: { width: 0, height: 2 },
@@ -32,27 +32,27 @@ export default function Index() {
           </Text>
         </View>
 
-        <View className="gap-2">
+        <View className="gap-4">
           <Text
-            className="text-2xl text-white text-left leading-tight font-['OpenDyslexic-Bold']"
+            className="text-4xl text-white text-left leading-tight font-['Helvetica-Bold']"
             style={{
               textShadowColor: "rgba(0,0,0,0.85)",
               textShadowOffset: { width: 0, height: 2 },
               textShadowRadius: 8,
             }}
           >
-            Xin chào, mình là <Text className="text-[#E8935E]">Buddy!</Text>
-            {"\n"}
-            <Text
-              className="text-base text-white font-['OpenDyslexic-Regular'] leading-normal"
-              style={{
-                textShadowColor: "rgba(0,0,0,0.85)",
-                textShadowOffset: { width: 0, height: 2 },
-                textShadowRadius: 6,
-              }}
-            >
-              Mình sẽ đồng hành cùng bạn khám phá bảo tàng hôm nay!
-            </Text>
+            Xin chào, mình là{" "}
+            <Text className="text-[#E8935E]">Buddy!</Text>
+          </Text>
+          <Text
+            className="text-xl text-white font-['Helvetica-Bold'] leading-relaxed"
+            style={{
+              textShadowColor: "rgba(0,0,0,0.85)",
+              textShadowOffset: { width: 0, height: 2 },
+              textShadowRadius: 6,
+            }}
+          >
+            Mình sẽ đồng hành cùng bạn khám phá bảo tàng hôm nay!
           </Text>
         </View>
       </View>
@@ -63,7 +63,7 @@ export default function Index() {
       >
         <Pressable onPress={() => router.push("/selection")} className="w-full py-4 rounded-2xl bg-[#E8935E] active:opacity-80">
           <Text
-            className="text-lg text-white font-['OpenDyslexic-Bold'] text-center"
+            className="text-lg text-white font-['Helvetica-Bold'] text-center"
             style={{
               textShadowColor: "rgba(0,0,0,0.6)",
               textShadowOffset: { width: 0, height: 1 },

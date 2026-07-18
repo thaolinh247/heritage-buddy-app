@@ -1,0 +1,162 @@
+import { useLocalSearchParams, useRouter } from "expo-router";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { View, Text, Pressable } from "@/tw";
+import { useVideoPlayer, VideoView } from "expo-video";
+import { MUSEUM_NODES } from "@/data/museum-map";
+import { useMapProgress } from "@/hooks/use-map-progress";
+import { images } from "@/constants/images";
+import { Image } from "expo-image";
+import { useCallback } from "react";
+
+export default function NodeVideoScreen() {
+  const { id } = useLocalSearchParams<{ id: string }>();
+  const router = useRouter();
+  const node = MUSEUM_NODES.find((n) => n.id === id);
+
+  if (!node) {
+    return (
+      <SafeAreaView
+        style={{
+          flex: 1,
+          backgroundColor: "#FDF3E7",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Image
+          source={images.mascotConfused}
+          style={{ width: 120, height: 120 }}
+          contentFit="contain"
+        />
+        <Text
+          className="text-lg text-[#5C3A21] text-center mt-4 px-8"
+          style={{ fontFamily: "Helvetica-Bold" }}
+        >
+          Không tìm thấy nội dung
+        </Text>
+        <Pressable
+          onPress={() => router.back()}
+          className="mt-6 px-8 py-3 rounded-2xl"
+          style={{ backgroundColor: "#E8935E" }}
+        >
+          <Text
+            className="text-white text-base"
+            style={{ fontFamily: "Helvetica-Bold" }}
+          >
+            Quay lại
+          </Text>
+        </Pressable>
+      </SafeAreaView>
+    );
+  }
+
+  return <NodeVideoContent node={node} />;
+}
+
+function NodeVideoContent({ node }: { node: NonNullable<(typeof MUSEUM_NODES)[number]> }) {
+  const router = useRouter();
+  const { addCompletedNode, getNodeStatus } = useMapProgress();
+
+  const player = useVideoPlayer(node.videoSource, (player) => {
+    player.play();
+  });
+
+  const status = getNodeStatus(node);
+  const isLastNode = node.order === 13;
+  const isAlreadyCompleted = status === "completed";
+
+  const handleComplete = useCallback(async () => {
+    if (isAlreadyCompleted) {
+      router.back();
+      return;
+    }
+    await addCompletedNode(node.id);
+    if (isLastNode) {
+      router.replace("/celebration");
+    } else {
+      const nextNode = MUSEUM_NODES.find((n) => n.order === node.order + 1);
+      if (nextNode) {
+        router.replace(`/node/${nextNode.id}`);
+      } else {
+        router.back();
+      }
+    }
+  }, [node.id, isAlreadyCompleted, isLastNode, node.order, addCompletedNode, router]);
+
+  return (
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#FDF3E7" }}>
+      <Pressable
+        onPress={() => router.back()}
+        className="absolute top-4 left-4 w-12 h-12 items-center justify-center rounded-full z-10"
+        style={{
+          backgroundColor: "rgba(255,255,255,0.85)",
+          shadowColor: "#000",
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.1,
+          shadowRadius: 4,
+          elevation: 3,
+        }}
+      >
+        <Text className="text-xl" style={{ fontFamily: "Helvetica-Bold" }}>←</Text>
+      </Pressable>
+
+      <View className="flex-1">
+        <VideoView
+          player={player}
+          style={{ width: "100%", aspectRatio: 16 / 9 }}
+          nativeControls
+        />
+
+        <View className="flex-1 px-5 pt-5">
+          <Text
+            className="text-2xl mb-2"
+            style={{ fontFamily: "Helvetica-Bold", color: "#5C3A21" }}
+          >
+            {node.title}
+          </Text>
+          <Text
+            className="text-base"
+            style={{ fontFamily: "Helvetica-Bold", color: "#7A5233" }}
+          >
+            {isAlreadyCompleted
+              ? "Bạn đã xem nội dung này."
+              : "Xem video để khám phá thêm về hiện vật này."}
+          </Text>
+        </View>
+
+        <View className="px-5 pb-6">
+          <Pressable
+            onPress={handleComplete}
+            className="w-full py-4 rounded-2xl active:opacity-80"
+            style={{
+              backgroundColor: isAlreadyCompleted ? "#D4C5B6" : "#2E8B7E",
+            }}
+          >
+            <Text
+              className="text-white text-lg text-center"
+              style={{ fontFamily: "Helvetica-Bold" }}
+            >
+              {isLastNode
+                ? "Kết thúc hành trình"
+                : isAlreadyCompleted
+                  ? "Quay lại bản đồ"
+                  : "Hoàn thành"}
+            </Text>
+          </Pressable>
+        </View>
+
+        <Image
+          source={images.mascotHappy}
+          style={{
+            position: "absolute",
+            bottom: 100,
+            right: 16,
+            width: 64,
+            height: 64,
+          }}
+          contentFit="contain"
+        />
+      </View>
+    </SafeAreaView>
+  );
+}

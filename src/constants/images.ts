@@ -1,4 +1,5 @@
 import onboardingScreen from "@/assets/images/onboarding-screen.png";
+import mapImage from "@/assets/images/map.jpg";
 import mascotDefault from "@/assets/Mascot/mascot_default.png";
 import mascotHappy from "@/assets/Mascot/mascot_happy.png";
 import mascotListening from "@/assets/Mascot/mascot_listening.png";
@@ -12,6 +13,7 @@ import mascotKhiemThi from "@/assets/Mascot/khiemthi.png";
 
 export const images = {
   onboardingScreen,
+  mapImage,
   mascotDefault,
   mascotHappy,
   mascotListening,

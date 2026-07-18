@@ -8,10 +8,10 @@ SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({
-    "OpenDyslexic-Regular": require("../../assets/fonts/OpenDyslexic-Regular.otf"),
-    "OpenDyslexic-Bold": require("../../assets/fonts/OpenDyslexic-Bold.otf"),
-    "OpenDyslexic-Italic": require("../../assets/fonts/OpenDyslexic-Italic.otf"),
-    "OpenDyslexic-BoldItalic": require("../../assets/fonts/OpenDyslexic-BoldItalic.otf"),
+    "Helvetica-Regular": require("../../assets/fonts/Helvetica-Regular.ttf"),
+    "Helvetica-Bold": require("../../assets/fonts/Helvetica-Bold.ttf"),
+    "Helvetica-Italic": require("../../assets/fonts/Helvetica-Italic.ttf"),
+    "Helvetica-BoldItalic": require("../../assets/fonts/Helvetica-BoldItalic.ttf"),
   });
 
   useEffect(() => {

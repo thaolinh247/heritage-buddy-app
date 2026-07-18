@@ -2,7 +2,9 @@ import { images } from "@/constants/images";
 import { Pressable, Text, View } from "@/tw";
 import { Image } from "expo-image";
 import { useState } from "react";
+import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useAccessibilityStore } from "@/store/accessibility";
 
 type ModeType = "vision" | "hearing" | "speech";
 
@@ -29,6 +31,8 @@ const CARDS = [
 
 export default function SelectionScreen() {
   const [selectedId, setSelectedId] = useState<ModeType | null>(null);
+  const router = useRouter();
+  const setMode = useAccessibilityStore((s) => s.setMode);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#FDF3E7" }}>
@@ -48,7 +52,7 @@ export default function SelectionScreen() {
           style={{
             fontSize: 22,
             lineHeight: 50,
-            fontFamily: "OpenDyslexic-Bold",
+            fontFamily: "Helvetica-Bold",
             flexGrow: 0,
             flexShrink: 0,
           }}
@@ -92,7 +96,7 @@ export default function SelectionScreen() {
                   style={{
                     fontSize: 20,
                     lineHeight: 26,
-                    fontFamily: "OpenDyslexic-Bold",
+                    fontFamily: "Helvetica-Bold",
                   }}
                 >
                   {card.label}
@@ -132,7 +136,10 @@ export default function SelectionScreen() {
         <Pressable
           disabled={!selectedId}
           onPress={() => {
-            // Logic chuyển màn hình tiếp theo
+            if (selectedId) {
+              setMode(selectedId);
+              router.replace("/museum-map");
+            }
           }}
           className="w-full py-6 rounded-2xl mt-4 active:opacity-80"
           style={{
@@ -140,7 +147,7 @@ export default function SelectionScreen() {
           }}
         >
           <Text
-            className="text-lg text-white font-['OpenDyslexic-Bold'] text-center"
+            className="text-lg text-white font-['Helvetica-Bold'] text-center"
             style={{
               textShadowColor: "rgba(0,0,0,0.6)",
               textShadowOffset: { width: 0, height: 1 },

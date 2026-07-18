@@ -1,8 +1,8 @@
 export const fontFamily = {
-  dyslexie: "OpenDyslexic-Regular",
-  dyslexieBold: "OpenDyslexic-Bold",
-  dyslexieItalic: "OpenDyslexic-Italic",
-  dyslexieBoldItalic: "OpenDyslexic-BoldItalic",
+  regular: "Helvetica-Bold",
+  bold: "Helvetica-Bold",
+  italic: "Helvetica-Italic",
+  boldItalic: "Helvetica-BoldItalic",
 } as const;
 
 export const fontSize = {
