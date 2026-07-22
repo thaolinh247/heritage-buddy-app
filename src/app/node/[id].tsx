@@ -2,6 +2,7 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { View, Text, Pressable } from "@/tw";
 import { useVideoPlayer, VideoView } from "expo-video";
+import { useEventListener } from "expo";
 import { MUSEUM_NODES } from "@/data/museum-map";
 import { useMapProgress } from "@/hooks/use-map-progress";
 import { images } from "@/constants/images";
@@ -55,10 +56,17 @@ export default function NodeVideoScreen() {
 
 function NodeVideoContent({ node }: { node: NonNullable<(typeof MUSEUM_NODES)[number]> }) {
   const router = useRouter();
-  const { addCompletedNode, getNodeStatus } = useMapProgress();
+  const { completeNode, getNodeStatus } = useMapProgress();
 
   const player = useVideoPlayer(node.videoSource, (player) => {
+    player.loop = false;
     player.play();
+  });
+
+  useEventListener(player, "statusChange", ({ status }) => {
+    if (status === "readyToPlay" && !player.playing) {
+      player.play();
+    }
   });
 
   const status = getNodeStatus(node);
@@ -70,18 +78,18 @@ function NodeVideoContent({ node }: { node: NonNullable<(typeof MUSEUM_NODES)[nu
       router.back();
       return;
     }
-    await addCompletedNode(node.id);
+    await completeNode(node.id);
     if (isLastNode) {
       router.replace("/celebration");
     } else {
-      const nextNode = MUSEUM_NODES.find((n) => n.order === node.order + 1);
-      if (nextNode) {
-        router.replace(`/node/${nextNode.id}`);
+      const next = MUSEUM_NODES.find((n) => n.order === node.order + 1);
+      if (next) {
+        router.replace(`/node/${next.id}`);
       } else {
         router.back();
       }
     }
-  }, [node.id, isAlreadyCompleted, isLastNode, node.order, addCompletedNode, router]);
+  }, [node.id, isAlreadyCompleted, isLastNode, node.order, completeNode, router]);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#FDF3E7" }}>
@@ -145,17 +153,6 @@ function NodeVideoContent({ node }: { node: NonNullable<(typeof MUSEUM_NODES)[nu
           </Pressable>
         </View>
 
-        <Image
-          source={images.mascotHappy}
-          style={{
-            position: "absolute",
-            bottom: 100,
-            right: 16,
-            width: 64,
-            height: 64,
-          }}
-          contentFit="contain"
-        />
       </View>
     </SafeAreaView>
   );

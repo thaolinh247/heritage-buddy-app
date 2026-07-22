@@ -18,15 +18,14 @@ export const MUSEUM_SECTIONS: MuseumSection[] = [
 ];
 
 export const MUSEUM_NODES: MapNode[] = [
-  // Section: Khu Cổ đại (nodes 1-3)
   {
     id: "ancient-01",
     order: 1,
-    title: "Nền văn minh sông Hồng",
+    title: "Bức tượng chân dung Chủ tịch Hồ Chí Minh",
     sectionId: "ancient",
     x: 22,
     y: 6,
-    videoSource: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+    videoSource: "https://drive.google.com/uc?export=download&id=1BVLYXbK_THS2JpiE218LWA0PiRrNL8lJ",
     thumbnail: "",
   },
   {
@@ -49,7 +48,6 @@ export const MUSEUM_NODES: MapNode[] = [
     videoSource: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
     thumbnail: "",
   },
-  // Section: Khu Trung đại (nodes 4-7)
   {
     id: "medieval-01",
     order: 4,
@@ -90,38 +88,36 @@ export const MUSEUM_NODES: MapNode[] = [
     videoSource: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/SubaruOutbackOnStreetAndDirt.mp4",
     thumbnail: "",
   },
-  // Section: Khu Cận đại (nodes 8-11)
   {
     id: "early-modern-01",
     order: 8,
-    title: "Thời kỳ chúa Nguyễn",
+    title: "Lá cờ \"Bình dân học vụ\"",
     sectionId: "early-modern",
     x: 62,
     y: 70,
-    videoSource: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4",
+    videoSource: "https://drive.google.com/uc?export=download&id=1ciNnXvFb49osyY9M4U298YG_TW3ElN1T",
     thumbnail: "",
   },
   {
     id: "early-modern-02",
     order: 9,
-    title: "Áo dài qua các thời kỳ",
+    title: "Khăn len quàng cổ của Mary Luois",
     sectionId: "early-modern",
     x: 22,
     y: 80,
-    videoSource: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/VolkswagenGTIReview.mp4",
+    videoSource: "https://drive.google.com/uc?export=download&id=12Tf1bH7wHdWXFEfQmdgN3wVn_R1NaR60",
     thumbnail: "",
   },
   {
     id: "early-modern-03",
     order: 10,
-    title: "Kháng chiến chống Pháp",
+    title: "Tác phẩm \"Bản án chế độ thực dân Pháp\"",
     sectionId: "early-modern",
     x: 70,
     y: 88,
-    videoSource: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WeAreGoingOnBullrun.mp4",
+    videoSource: "https://drive.google.com/uc?export=download&id=1A3sczgdt2q6PVfJv1kX88Qz_SYhPdjNW",
     thumbnail: "",
   },
-  // Section: Khu Hiện đại (nodes 11-13)
   {
     id: "modern-01",
     order: 11,

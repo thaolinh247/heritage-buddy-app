@@ -164,19 +164,19 @@ export function MapNode({ node, status, containerWidth, onPress }: MapNodeProps)
         style={{
           position: "absolute",
           top: NODE_SIZE + 4,
-          left: -28,
-          width: NODE_SIZE + 56,
+          left: -42,
+          width: NODE_SIZE + 84,
           alignItems: "center",
         }}
       >
         <Text
           style={{
-            fontSize: 13,
+            fontSize: 11,
             color: "#000000",
             fontFamily: "Helvetica-Bold",
             textAlign: "center",
           }}
-          numberOfLines={2}
+          numberOfLines={3}
         >
           {node.title}
         </Text>
