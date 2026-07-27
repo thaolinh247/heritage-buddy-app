@@ -5,6 +5,7 @@ import { useVideoPlayer, VideoView } from "expo-video";
 import { useEventListener } from "expo";
 import { MUSEUM_NODES } from "@/data/museum-map";
 import { useMapProgress } from "@/hooks/use-map-progress";
+import { useGestureNavigation } from "@/hooks/use-gesture-navigation";
 import { images } from "@/constants/images";
 import { Image } from "expo-image";
 import { useCallback } from "react";
@@ -57,6 +58,7 @@ export default function NodeVideoScreen() {
 function NodeVideoContent({ node }: { node: NonNullable<(typeof MUSEUM_NODES)[number]> }) {
   const router = useRouter();
   const { completeNode, getNodeStatus } = useMapProgress();
+  useGestureNavigation(node.id);
 
   const player = useVideoPlayer(node.videoSource, (player) => {
     player.loop = false;
@@ -133,6 +135,27 @@ function NodeVideoContent({ node }: { node: NonNullable<(typeof MUSEUM_NODES)[nu
         </View>
 
         <View className="px-5 pb-6">
+          <Pressable
+            onPress={() => router.push(`/chat/${node.id}`)}
+            className="w-full py-3 mb-3 rounded-2xl active:opacity-80"
+            style={{
+              backgroundColor: "#E8935E",
+              shadowColor: "#E8935E",
+              shadowOffset: { width: 0, height: 4 },
+              shadowOpacity: 0.3,
+              shadowRadius: 8,
+              elevation: 5,
+            }}
+            accessibilityLabel="Mở trợ lý Buddy"
+            accessibilityRole="button"
+          >
+            <Text
+              className="text-white text-base text-center"
+              style={{ fontFamily: "Helvetica-Bold" }}
+            >
+              🎙️ Hỏi Buddy
+            </Text>
+          </Pressable>
           <Pressable
             onPress={handleComplete}
             className="w-full py-4 rounded-2xl active:opacity-80"

@@ -35,7 +35,9 @@
           "imageWidth": 76
         }
       ],
-      "expo-video"
+      "expo-video",
+      "expo-speech-recognition",
+      "expo-audio"
     ],
     "experiments": {
       "typedRoutes": true,
