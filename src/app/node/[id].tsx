@@ -6,6 +6,7 @@ import { useEventListener } from "expo";
 import { MUSEUM_NODES } from "@/data/museum-map";
 import { useMapProgress } from "@/hooks/use-map-progress";
 import { useGestureNavigation } from "@/hooks/use-gesture-navigation";
+import { useRobotConnection } from "@/hooks/use-robot-connection";
 import { images } from "@/constants/images";
 import { Image } from "expo-image";
 import { useCallback } from "react";
@@ -58,6 +59,7 @@ export default function NodeVideoScreen() {
 function NodeVideoContent({ node }: { node: NonNullable<(typeof MUSEUM_NODES)[number]> }) {
   const router = useRouter();
   const { completeNode, getNodeStatus } = useMapProgress();
+  const { sendCommand, isConnected } = useRobotConnection();
   useGestureNavigation(node.id);
 
   const player = useVideoPlayer(node.videoSource, (player) => {
@@ -80,8 +82,19 @@ function NodeVideoContent({ node }: { node: NonNullable<(typeof MUSEUM_NODES)[nu
       router.back();
       return;
     }
+
+    // Send NODE_DONE to robot via BLE
+    if (isConnected) {
+      await sendCommand(`NODE_DONE:${node.id}`);
+    }
+
     await completeNode(node.id);
+
     if (isLastNode) {
+      // Send ALL_DONE to robot
+      if (isConnected) {
+        await sendCommand("NEXT_NODE");
+      }
       router.replace("/celebration");
     } else {
       const next = MUSEUM_NODES.find((n) => n.order === node.order + 1);
@@ -91,7 +104,14 @@ function NodeVideoContent({ node }: { node: NonNullable<(typeof MUSEUM_NODES)[nu
         router.back();
       }
     }
-  }, [node.id, isAlreadyCompleted, isLastNode, node.order, completeNode, router]);
+  }, [node.id, isAlreadyCompleted, isLastNode, node.order, completeNode, router, sendCommand, isConnected]);
+
+  const handleContinue = useCallback(async () => {
+    if (isConnected) {
+      await sendCommand("NEXT_NODE");
+    }
+    handleComplete();
+  }, [sendCommand, isConnected, handleComplete]);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#FDF3E7" }}>
@@ -135,6 +155,7 @@ function NodeVideoContent({ node }: { node: NonNullable<(typeof MUSEUM_NODES)[nu
         </View>
 
         <View className="px-5 pb-6">
+          {/* Hỏi Buddy Button */}
           <Pressable
             onPress={() => router.push(`/chat/${node.id}`)}
             className="w-full py-3 mb-3 rounded-2xl active:opacity-80"
@@ -156,11 +177,38 @@ function NodeVideoContent({ node }: { node: NonNullable<(typeof MUSEUM_NODES)[nu
               🎙️ Hỏi Buddy
             </Text>
           </Pressable>
+
+          {/* Hoàn thành node Button */}
+          {!isAlreadyCompleted && (
+            <Pressable
+              onPress={handleComplete}
+              className="w-full py-4 mb-3 rounded-2xl active:opacity-80"
+              style={{
+                backgroundColor: "#2E8B7E",
+                shadowColor: "#2E8B7E",
+                shadowOffset: { width: 0, height: 4 },
+                shadowOpacity: 0.3,
+                shadowRadius: 8,
+                elevation: 5,
+              }}
+              accessibilityLabel="Hoàn thành node hiện tại"
+              accessibilityRole="button"
+            >
+              <Text
+                className="text-white text-lg text-center"
+                style={{ fontFamily: "Helvetica-Bold" }}
+              >
+                Hoàn thành node
+              </Text>
+            </Pressable>
+          )}
+
+          {/* Primary Action Button */}
           <Pressable
-            onPress={handleComplete}
+            onPress={isLastNode ? () => router.replace("/celebration") : handleComplete}
             className="w-full py-4 rounded-2xl active:opacity-80"
             style={{
-              backgroundColor: isAlreadyCompleted ? "#D4C5B6" : "#2E8B7E",
+              backgroundColor: isAlreadyCompleted ? "#D4C5B6" : "#E8935E",
             }}
           >
             <Text
@@ -171,7 +219,7 @@ function NodeVideoContent({ node }: { node: NonNullable<(typeof MUSEUM_NODES)[nu
                 ? "Kết thúc hành trình"
                 : isAlreadyCompleted
                   ? "Quay lại bản đồ"
-                  : "Hoàn thành"}
+                  : "Tiếp theo"}
             </Text>
           </Pressable>
         </View>

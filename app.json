@@ -37,7 +37,8 @@
       ],
       "expo-video",
       "expo-speech-recognition",
-      "expo-audio"
+      "expo-audio",
+      "react-native-ble-plx"
     ],
     "experiments": {
       "typedRoutes": true,

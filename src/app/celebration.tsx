@@ -3,12 +3,21 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Text, Pressable } from "@/tw";
 import { images } from "@/constants/images";
 import { Image } from "expo-image";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { useMapProgress } from "@/hooks/use-map-progress";
+import { useRobotConnection } from "@/hooks/use-robot-connection";
 
 export default function CelebrationScreen() {
   const router = useRouter();
   const { resetProgress } = useMapProgress();
+  const { sendCommand, isConnected } = useRobotConnection();
+
+  // Send STOP to robot when celebration screen mounts
+  useEffect(() => {
+    if (isConnected) {
+      sendCommand("STOP");
+    }
+  }, [isConnected, sendCommand]);
 
   const handleRestart = useCallback(async () => {
     await resetProgress();

@@ -1,12 +1,13 @@
-import { useCallback, useState } from "react";
+import { useCallback, useState, useEffect } from "react";
 import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Alert } from "react-native";
+import { Alert, ActivityIndicator } from "react-native";
 import { Image } from "expo-image";
 import { View, Text, Pressable, ScrollView } from "@/tw";
 import { MapNode } from "@/components/map/map-node";
 import { MapPath } from "@/components/map/map-path";
 import { useMapProgress } from "@/hooks/use-map-progress";
+import { useRobotConnection } from "@/hooks/use-robot-connection";
 import { getMaxNodeY } from "@/data/museum-map";
 import { images } from "@/constants/images";
 import type { MapNode as MapNodeType } from "@/types/museum-map";
@@ -25,6 +26,14 @@ export default function MuseumMapScreen() {
     resetProgress,
     loaded,
   } = useMapProgress();
+
+  const {
+    isConnected,
+    connectionStatus,
+    connect,
+    sendCommand,
+  } = useRobotConnection();
+
   const [containerWidth, setContainerWidth] = useState(0);
 
   const maxY = getMaxNodeY();
@@ -39,6 +48,31 @@ export default function MuseumMapScreen() {
     },
     [getNodeStatus, router],
   );
+
+  const handleStart = useCallback(() => {
+    if (!isConnected) {
+      Alert.alert(
+        "Chưa kết nối",
+        "Bạn cần kết nối với robot trước khi xuất phát.",
+        [
+          { text: "Thử lại", onPress: () => connect() },
+          { text: "Huỷ", style: "cancel" },
+        ],
+      );
+      return;
+    }
+
+    Alert.alert("Xuất phát", "Robot sẽ bắt đầu di chuyển theo bản đồ?", [
+      { text: "Huỷ", style: "cancel" },
+      {
+        text: "Xuất phát",
+        onPress: () => {
+          sendCommand("START");
+          Alert.alert("Thành công", "Robot đã bắt đầu di chuyển!");
+        },
+      },
+    ]);
+  }, [isConnected, connect, sendCommand]);
 
   const handleReset = useCallback(() => {
     Alert.alert(
@@ -148,10 +182,82 @@ export default function MuseumMapScreen() {
         </View>
       </ScrollView>
 
+      {/* Bottom Panel */}
+      <View
+        className="px-5 pb-5 pt-3"
+        style={{
+          backgroundColor: "#FDF3E7",
+          borderTopWidth: 1,
+          borderTopColor: "#E2D2C1",
+        }}
+      >
+        {/* BLE Connection Status */}
+        <View className="flex-row items-center justify-between mb-3">
+          <View className="flex-row items-center">
+            <View
+              className="w-3 h-3 rounded-full mr-2"
+              style={{
+                backgroundColor: isConnected ? "#2E8B7E" : "#E85D4E",
+              }}
+            />
+            <Text
+              className="text-sm"
+              style={{
+                fontFamily: "Helvetica-Bold",
+                color: isConnected ? "#2E8B7E" : "#E85D4E",
+              }}
+            >
+              {connectionStatus === "connected"
+                ? "Đã kết nối robot"
+                : connectionStatus === "scanning"
+                  ? "Đang quét..."
+                  : connectionStatus === "connecting"
+                    ? "Đang kết nối..."
+                    : "Chưa kết nối"}
+            </Text>
+          </View>
+
+          {!isConnected && connectionStatus !== "scanning" && (
+            <Pressable
+              onPress={connect}
+              className="px-3 py-1 rounded-full"
+              style={{ backgroundColor: "#E8935E" }}
+            >
+              <Text
+                className="text-white text-xs"
+                style={{ fontFamily: "Helvetica-Bold" }}
+              >
+                Kết nối
+              </Text>
+            </Pressable>
+          )}
+
+          {connectionStatus === "scanning" && (
+            <ActivityIndicator size="small" color="#E8935E" />
+          )}
+        </View>
+
+        {/* Start Button */}
+        <Pressable
+          onPress={handleStart}
+          className="w-full py-4 rounded-2xl items-center justify-center active:opacity-80"
+          style={{
+            backgroundColor: isConnected ? "#2E8B7E" : "#D4C5B6",
+          }}
+        >
+          <Text
+            className="text-lg text-white"
+            style={{ fontFamily: "Helvetica-Bold" }}
+          >
+            {isConnected ? "Xuất phát" : "Chưa kết nối"}
+          </Text>
+        </Pressable>
+      </View>
+
       {/* Reset FAB */}
       <Pressable
         onPress={handleReset}
-        className="absolute bottom-6 right-4 w-12 h-12 rounded-full items-center justify-center"
+        className="absolute bottom-32 right-4 w-12 h-12 rounded-full items-center justify-center"
         style={{
           backgroundColor: "#E85D4E",
           zIndex: 50,

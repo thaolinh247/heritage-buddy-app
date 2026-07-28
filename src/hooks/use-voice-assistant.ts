@@ -1,6 +1,7 @@
 import { useEffect, useRef, useCallback, useState } from "react";
 import { useRouter } from "expo-router";
 import { useVoiceAssistantStore } from "@/store/voice-assistant";
+import { useRobotConnection } from "@/hooks/use-robot-connection";
 import { useSpeechRecognition, stopListening } from "@/lib/speech";
 import { useVoiceRecorder } from "@/lib/voice-recorder";
 import { useTTS } from "@/lib/tts";
@@ -31,6 +32,7 @@ export function useVoiceAssistant(node: MapNode | null) {
   const [serverStatus, setServerStatus] = useState<ServerStatus>("checking");
   const router = useRouter();
   const { completeNode } = useMapProgress();
+  const { sendCommand, isConnected, onVoiceStop } = useRobotConnection();
 
   const canUseSpeech = speechError !== "unavailable";
 
@@ -98,6 +100,18 @@ export function useVoiceAssistant(node: MapNode | null) {
       setState("thinking");
     }
   }, [recorderState, setState]);
+
+  // Listen for VOICE_STOP from robot → auto-start mic
+  useEffect(() => {
+    onVoiceStop(() => {
+      // Wait a moment for TTS to finish, then restart mic
+      setTimeout(() => {
+        if (!inputLockRef.current) {
+          startListeningAfterSpeaking();
+        }
+      }, 500);
+    });
+  }, [onVoiceStop, startListeningAfterSpeaking]);
 
   const navigateToNextNode = useCallback(() => {
     const current = nodeRef.current;
@@ -219,6 +233,10 @@ export function useVoiceAssistant(node: MapNode | null) {
         if (response.transcription && isNavCommand(response.transcription)) {
           setState("idle");
           inputLockRef.current = false;
+          // Send VOICE_NEXT to robot via BLE
+          if (isConnected) {
+            sendCommand("VOICE_NEXT");
+          }
           navigateToNextNode();
           return;
         }
@@ -300,7 +318,7 @@ export function useVoiceAssistant(node: MapNode | null) {
         inputLockRef.current = false;
       }
     },
-    [addMessage, markSpeakingDone, setState, playTTS, readAudioBase64, startListeningAfterSpeaking, navigateToNextNode],
+    [addMessage, markSpeakingDone, setState, playTTS, readAudioBase64, startListeningAfterSpeaking, navigateToNextNode, sendCommand, isConnected],
   );
 
   useEffect(() => {
@@ -318,13 +336,17 @@ export function useVoiceAssistant(node: MapNode | null) {
     if (isFinal && transcript && transcript !== finalTranscriptRef.current) {
       finalTranscriptRef.current = transcript;
       if (isNavCommand(transcript)) {
+        // Send VOICE_NEXT to robot via BLE
+        if (isConnected) {
+          sendCommand("VOICE_NEXT");
+        }
         navigateToNextNode();
       } else {
         handleUserMessage(transcript);
       }
       resetSTT();
     }
-  }, [isFinal, transcript, resetSTT, handleUserMessage, navigateToNextNode]);
+  }, [isFinal, transcript, resetSTT, handleUserMessage, navigateToNextNode, sendCommand, isConnected]);
 
   const toggleListening = useCallback(async () => {
     if (state === "listening") {
